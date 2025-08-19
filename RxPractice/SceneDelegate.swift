@@ -10,7 +10,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: scene)
         
 //        let rootViewController = UINavigationController(rootViewController: RxTableViewExampleViewController())
-        let rootViewController = UINavigationController(rootViewController: RxNumberViewController())
+//        let rootViewController = UINavigationController(rootViewController: RxNumberViewController())
+        let rootViewController = UINavigationController(rootViewController: RxValidationViewController())
          
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
