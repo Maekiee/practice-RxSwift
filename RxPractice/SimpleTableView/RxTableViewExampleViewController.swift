@@ -47,6 +47,8 @@ class RxTableViewExampleViewController: UIViewController {
             .bind(with: self) { owner, value in
                 owner.showAlert(tip: "\(value.row)")
             }.disposed(by: disposeBag)
+        
+        
 //            .bind { [weak self] value in
 //                guard let self = self else { return }
 //                showAlert(tip: "\(value.row)")
