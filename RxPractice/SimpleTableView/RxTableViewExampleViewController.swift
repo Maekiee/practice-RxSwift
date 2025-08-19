@@ -40,12 +40,18 @@ class RxTableViewExampleViewController: UIViewController {
         tableView.rx.modelSelected(String.self)
             .bind(with: self) { owner, value in
                 print("텝: \(value)")
+                owner.showAlert(tip: value)
             }.disposed(by: disposeBag)
         
         tableView.rx.itemAccessoryButtonTapped
             .bind(with: self) { owner, value in
-                print("디테일 버튼 탭 섹션: \(value.section), 디테일 버튼 탭 로우 \(value.row)")
+                owner.showAlert(tip: "\(value.row)")
             }.disposed(by: disposeBag)
+//            .bind { [weak self] value in
+//                guard let self = self else { return }
+//                showAlert(tip: "\(value.row)")
+//            }.disposed(by: disposeBag)
+        
         
         
     }
