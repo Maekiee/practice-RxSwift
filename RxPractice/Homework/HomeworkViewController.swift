@@ -88,6 +88,16 @@ class HomeworkViewController: UIViewController {
     }
      
     private func bind() {
+        
+        searchBar.rx.searchButtonClicked
+            .subscribe(with: self) { owner, value in
+                guard let text = owner.searchBar.text else { return }
+                let newValue = Person(name: text, email: "steven.brown@example.com", profileImage: "https://randomuser.me/api/portraits/thumb/women/25.jpg")
+                var result = try! owner.items.value()
+                result.insert(newValue, at: 0)
+                owner.items.onNext(result)
+            }
+            .disposed(by: disposeBag)
           
         items.bind(to: tableView.rx.items) { (tableView, row, element) in
             let cell = tableView.dequeueReusableCell(withIdentifier: PersonTableViewCell.identifier) as! PersonTableViewCell
