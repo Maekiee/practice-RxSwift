@@ -79,7 +79,11 @@ class HomeworkViewController: UIViewController {
     let searchBar = UISearchBar()
     let disposeBag = DisposeBag()
     
-    lazy var items = BehaviorSubject(value: sampleUsers)
+    lazy var personList = BehaviorSubject(value: sampleUsers)
+    
+    let publishItems = PublishSubject<[String]>()
+    
+    var  selectedNamed = BehaviorSubject<[String]>(value: [])
      
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,13 +97,17 @@ class HomeworkViewController: UIViewController {
             .subscribe(with: self) { owner, value in
                 guard let text = owner.searchBar.text else { return }
                 let newValue = Person(name: text, email: "steven.brown@example.com", profileImage: "https://randomuser.me/api/portraits/thumb/women/25.jpg")
-                var result = try! owner.items.value()
+                var result = try! owner.personList.value()
                 result.insert(newValue, at: 0)
-                owner.items.onNext(result)
+                owner.personList.onNext(result)
             }
             .disposed(by: disposeBag)
+        
+        selectedNamed.bind(to: collectionView.rx.items(cellIdentifier: UserCollectionViewCell.identifier, cellType: UserCollectionViewCell.self)) { row, name, cell in
+            cell.label.text = name
+        }.disposed(by: disposeBag)
           
-        items.bind(to: tableView.rx.items) { (tableView, row, element) in
+        personList.bind(to: tableView.rx.items) { (tableView, row, element) in
             let cell = tableView.dequeueReusableCell(withIdentifier: PersonTableViewCell.identifier) as! PersonTableViewCell
             print("로우: \(row), 엘리멘트: \(element)")
             let urlString = URL(string: element.profileImage)
@@ -107,6 +115,14 @@ class HomeworkViewController: UIViewController {
             cell.profileImageView.kf.setImage(with: urlString)
             return cell
         }.disposed(by: disposeBag)
+        
+        tableView.rx.modelSelected(Person.self)
+            .bind(with: self) { owner, value in
+                var newItems = try! owner.selectedNamed.value()
+                newItems.insert(value.name, at: 0)
+                owner.selectedNamed.onNext(newItems)
+                
+            }.disposed(by: disposeBag)
     }
     
     private func configure() {
