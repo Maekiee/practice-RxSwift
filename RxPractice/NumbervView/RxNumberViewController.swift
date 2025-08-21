@@ -33,22 +33,26 @@ class RxNumberViewController: UIViewController {
     
     let resultLabel = UILabel()
     
+    let viewModel = NumberVieModel()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configUI()
         configLayout()
         
-        Observable.combineLatest(
-            numberTextField1.rx.text.orEmpty,
-            numberTextField2.rx.text.orEmpty,
-            numberTextField3.rx.text.orEmpty) { textValue1, textValue2, textValue3 -> Int in
-                return (Int(textValue1) ?? 0) + (Int(textValue2) ?? 0) + (Int(textValue3) ?? 0)
-            }
-            .map { $0.description }
-            .bind(with: self) { owner, value in
-                owner.resultLabel.text = value
-            }.disposed(by: disposeBag)
+        
+        let input = NumberVieModel.Input(
+            numberText1: numberTextField1.rx.text.orEmpty,
+            numberText2: numberTextField2.rx.text.orEmpty,
+            numberText3: numberTextField3.rx.text.orEmpty
+        )
+        
+        let output = viewModel.transform(input: input)
+        
+        output.resultLabel
+            .bind(to: resultLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     

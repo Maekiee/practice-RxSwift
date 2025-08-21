@@ -4,15 +4,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let scene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
         
 //        let rootViewController = UINavigationController(rootViewController: RxTableViewExampleViewController())
-//        let rootViewController = UINavigationController(rootViewController: RxNumberViewController())
+        let rootViewController = UINavigationController(rootViewController: RxNumberViewController())
 //        let rootViewController = UINavigationController(rootViewController: RxValidationViewController())
-        let rootViewController = UINavigationController(rootViewController: HomeworkViewController())
+//        let rootViewController = UINavigationController(rootViewController: HomeworkViewController())
          
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
