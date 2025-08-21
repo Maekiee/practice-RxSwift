@@ -23,16 +23,19 @@ class NumberVieModel {
         
         let result = BehaviorSubject<String>(value: "")
         
+        
         Observable.combineLatest(
             input.numberText1,
-            input.numberText1,
-            input.numberText1,
+            input.numberText2,
+            input.numberText3,
         ) { (value1, value2, value3) -> Int in
+            print("일번 \(value1), 이번 \(value2), 삼번 \(value3)")
             return (Int(value1) ?? 0) + (Int(value2) ?? 0) + (Int(value3) ?? 0)
         }.map { $0.description }
-            .bind(with: self, onNext: { owner, value in
+            .bind(with: self) { owner, value in
+                print("뷰 모델:", value)
                 result.onNext(value)
-            })
+            }
             .disposed(by: disposeBag)
             
         return outPut(resultLabel: result)

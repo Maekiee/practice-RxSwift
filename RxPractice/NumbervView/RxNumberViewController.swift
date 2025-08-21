@@ -41,7 +41,6 @@ class RxNumberViewController: UIViewController {
         configUI()
         configLayout()
         
-        
         let input = NumberVieModel.Input(
             numberText1: numberTextField1.rx.text.orEmpty,
             numberText2: numberTextField2.rx.text.orEmpty,

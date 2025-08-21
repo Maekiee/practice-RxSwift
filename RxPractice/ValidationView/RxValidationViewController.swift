@@ -6,13 +6,13 @@ import RxSwift
 
 class RxValidationViewController: UIViewController {
     let disposeBag = DisposeBag()
+    let viewModel = ValidationViewModel()
     private let usernameLabel: UILabel = {
         let label = UILabel()
         label.text = "Username"
         label.font = .boldSystemFont(ofSize: 16)
         return label
     }()
-    
     private let usernameTextField: UITextField = {
         let tf = UITextField()
         tf.borderStyle = .roundedRect
@@ -59,33 +59,61 @@ class RxValidationViewController: UIViewController {
         super.viewDidLoad()
         configUI()
         configLayout()
+        bind()
         
-        let userNameValid = usernameTextField.rx.text.orEmpty
-            .map { $0.count >= 5}
-            .share(replay: 1)
+       
+    }
+    
+    func bind() {
         
-        let passWordValid = passwordTextField.rx.text.orEmpty
-            .map { $0.count >= 5}
-            .share(replay: 1)
+        let input = ValidationViewModel.Input(
+            userName: usernameTextField.rx.text.orEmpty,
+            password: passwordTextField.rx.text.orEmpty
+        )
         
-        let everyThingValid = Observable.combineLatest(userNameValid, passWordValid) { $0 && $1}.share(replay: 1)
+        let output = viewModel.transform(input: input)
         
-        userNameValid.bind(with: self) { owner, value in
-            owner.userNameValidationLabel.text = value ? "유효한 닉네임 입니다." : "유효하지 않은 닉네임 입니다."
-            owner.userNameValidationLabel.textColor = value ? .green : .red
-            owner.userNameValidationLabel.isHidden = !value
-        }.disposed(by: disposeBag)
+        output.userNamevalidationText
+            .bind(with: self) { owner, value in
+                owner.userNameValidationLabel.text = value.1
+                owner.userNameValidationLabel.textColor = value.0 ? .green : .red
+            }
+            .disposed(by: disposeBag)
         
-        passWordValid.bind(with: self) { owner, value in
-            owner.passwordValidationLabel.text = value ? "유효한 비밀번호 입니다." : "유효하지 않은 비밀번호 입니다."
-            owner.passwordValidationLabel.textColor = value ? .green : .red
-            owner.passwordValidationLabel.isHidden = !value
-        }.disposed(by: disposeBag)
+        output.passwordValidateText
+            .bind(with: self) { owner, value in
+                owner.passwordValidationLabel.text = value.1
+                owner.passwordValidationLabel.textColor = value.0 ? .green : .red
+            }
+            .disposed(by: disposeBag)
         
-        everyThingValid.bind(with: self) { owner, value in
-            owner.actionButton.isEnabled = !value
-            owner.actionButton.backgroundColor = value ? .green : .gray
-        }.disposed(by: disposeBag)
+        
+//        let userNameValid = usernameTextField.rx.text.orEmpty
+//            .map { $0.count >= 5}
+//            .share(replay: 1)
+        
+//        let passWordValid = passwordTextField.rx.text.orEmpty
+//            .map { $0.count >= 5}
+//            .share(replay: 1)
+        
+//        let everyThingValid = Observable.combineLatest(userNameValid, passWordValid) { $0 && $1}.share(replay: 1)
+//        
+//        userNameValid.bind(with: self) { owner, value in
+//            owner.userNameValidationLabel.text = value ? "유효한 닉네임 입니다." : "유효하지 않은 닉네임 입니다."
+//            owner.userNameValidationLabel.textColor = value ? .green : .red
+//            owner.userNameValidationLabel.isHidden = !value
+//        }.disposed(by: disposeBag)
+//        
+//        passWordValid.bind(with: self) { owner, value in
+//            owner.passwordValidationLabel.text = value ? "유효한 비밀번호 입니다." : "유효하지 않은 비밀번호 입니다."
+//            owner.passwordValidationLabel.textColor = value ? .green : .red
+//            owner.passwordValidationLabel.isHidden = !value
+//        }.disposed(by: disposeBag)
+//        
+//        everyThingValid.bind(with: self) { owner, value in
+//            owner.actionButton.isEnabled = !value
+//            owner.actionButton.backgroundColor = value ? .green : .gray
+//        }.disposed(by: disposeBag)
         
         //        usernameTextField.rx.text.orEmpty
         //            .map { $0.count >= 5 }
