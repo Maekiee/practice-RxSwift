@@ -60,8 +60,6 @@ class RxValidationViewController: UIViewController {
         configUI()
         configLayout()
         bind()
-        
-       
     }
     
     func bind() {
@@ -74,6 +72,7 @@ class RxValidationViewController: UIViewController {
         let output = viewModel.transform(input: input)
         
         output.userNamevalidationText
+            .skip(2)
             .bind(with: self) { owner, value in
                 owner.userNameValidationLabel.text = value.1
                 owner.userNameValidationLabel.textColor = value.0 ? .green : .red
@@ -81,56 +80,12 @@ class RxValidationViewController: UIViewController {
             .disposed(by: disposeBag)
         
         output.passwordValidateText
+            .skip(2)
             .bind(with: self) { owner, value in
                 owner.passwordValidationLabel.text = value.1
                 owner.passwordValidationLabel.textColor = value.0 ? .green : .red
             }
             .disposed(by: disposeBag)
-        
-        
-//        let userNameValid = usernameTextField.rx.text.orEmpty
-//            .map { $0.count >= 5}
-//            .share(replay: 1)
-        
-//        let passWordValid = passwordTextField.rx.text.orEmpty
-//            .map { $0.count >= 5}
-//            .share(replay: 1)
-        
-//        let everyThingValid = Observable.combineLatest(userNameValid, passWordValid) { $0 && $1}.share(replay: 1)
-//        
-//        userNameValid.bind(with: self) { owner, value in
-//            owner.userNameValidationLabel.text = value ? "유효한 닉네임 입니다." : "유효하지 않은 닉네임 입니다."
-//            owner.userNameValidationLabel.textColor = value ? .green : .red
-//            owner.userNameValidationLabel.isHidden = !value
-//        }.disposed(by: disposeBag)
-//        
-//        passWordValid.bind(with: self) { owner, value in
-//            owner.passwordValidationLabel.text = value ? "유효한 비밀번호 입니다." : "유효하지 않은 비밀번호 입니다."
-//            owner.passwordValidationLabel.textColor = value ? .green : .red
-//            owner.passwordValidationLabel.isHidden = !value
-//        }.disposed(by: disposeBag)
-//        
-//        everyThingValid.bind(with: self) { owner, value in
-//            owner.actionButton.isEnabled = !value
-//            owner.actionButton.backgroundColor = value ? .green : .gray
-//        }.disposed(by: disposeBag)
-        
-        //        usernameTextField.rx.text.orEmpty
-        //            .map { $0.count >= 5 }
-        //            .bind(with: self) { owner, value in
-        //                print(value)
-        //                owner.userNameValidationLabel.text = value ? "유효한 닉네임 입니다." : "유효하지 않은 닉네임 입니다."
-        //                owner.userNameValidationLabel.textColor = value ? .green : .red
-        //            }.disposed(by: disposeBag)
-        //
-        //        passwordTextField.rx.text.orEmpty
-        //            .skip(2)
-        //            .map { $0.count >= 5 }
-        //            .bind(with: self) { owner, value in
-        //                print(value)
-        //                owner.passwordValidationLabel.text = value ? "유효한 비밀번호 입니다." : "유효하지 않은 비밀번호 입니다."
-        //                owner.passwordValidationLabel.textColor = value ? .green : .red
-        //            }.disposed(by: disposeBag)
     }
     
     
